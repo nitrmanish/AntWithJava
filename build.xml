@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+ <project name="AntWithJava" default="run" xmlns:sonar="antlib:org.sonar.ant">
+    <!-- define names of directories -->
+    <property name="src" value="./src"/>
+    <property name="build" value="./build"/>
+	<property name="jar" value="./build/jar"/>
+    <property name="classes" value="./build/classes"/>
+    <property name="main-class" value="hello.HelloWorld"/>
+	<property name="sonar.host.url" value="http://localhost:9000" />
+	<property name="sonar.projectKey" value="AntWithJava" />
+	<property name="sonar.sources" value="src" />
+	<property name="sonar.java.binaries" value="build" />
+	<property name="sonar.java.libraries" value="C:\sonarqube-7.9.1\sonarqube-7.9.1\lib\*.jar" />
+    <!-- define all targets -->
+	<target name="clean">
+        <delete dir="${build}"/>
+    </target>
+    <target name="compile">
+         <mkdir dir="${classes}"/>
+         <javac srcdir="${src}" destdir="${classes}" includeantruntime="false" />
+    </target>
+	<target name="jar" depends="compile">
+        <mkdir dir="${jar}"/>
+        <jar destfile="${jar}/HelloWorld.jar" basedir="${classes}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+    <target name="run" depends="compile">
+         <java jar="${jar}/HelloWorld.jar" fork="true"/>
+    </target>
+	<target name="sonar">
+		<taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+			<!-- Update the following line, or put the "sonarqube-ant-task-*.jar" file in your "$HOME/.ant/lib" folder -->
+			<classpath path="sonarqube-ant-task-2.7.0.1612.jar" />
+		</taskdef> 
+		<!-- Execute SonarScanner for Ant Analysis -->
+		<sonar:sonar />
+	</target>
+ </project>
